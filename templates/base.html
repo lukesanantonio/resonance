@@ -1,0 +1,16 @@
+{% spaceless %}
+<!doctype html>
+<html>
+  <head>
+    <title>{% block title %}{% endblock %} - Resonance</title>
+    <meta charset='utf-8' />
+
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    {% include 'navbar.html' %}
+    {% block content %}{% endblock %}
+    {% include 'footer.html' %}
+  </body>
+</html>
+{% endspaceless %}
