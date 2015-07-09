@@ -11,7 +11,7 @@ app.jinja_options = ImmutableDict({'extensions':
 
 @app.route('/')
 def index():
-    return flask.render_template('login.html')
+    return flask.render_template('user_sign_up.html')
 
 @app.route('/user', methods=['POST'])
 def new_user():
