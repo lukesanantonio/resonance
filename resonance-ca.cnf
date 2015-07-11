@@ -1,0 +1,24 @@
+[req]
+distinguished_name = distinguished_name_cfg
+req_extensions = req_extensions_cfg
+x509_extensions = x509_extensions_cfg
+prompt=no
+
+[distinguished_name_cfg]
+C = US
+ST = New York
+L = Locust Valley
+O = Resonance Media Group
+CN = Luke San Antonio
+
+[req_extensions_cfg]
+basicConstraints = critical, CA:true, pathlen:0
+keyUsage = critical, digitalSignature, keyEncipherment, cRLSign, keyCertSign
+extendedKeyUsage = critical, serverAuth
+subjectAltName=DNS:localhost, email:lukesanantonio@gmail.com
+
+[x509_extensions_cfg]
+basicConstraints = CA:false, pathlen:0
+keyUsage = digitalSignature, keyEncipherment, cRLSign, keyCertSign
+extendedKeyUsage = serverAuth
+subjectAltName=DNS:localhost, email:lukesanantonio@gmail.com

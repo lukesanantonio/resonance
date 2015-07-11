@@ -1,3 +1,5 @@
 __pycache__/
-resonance.crt
-resonance.key
+
+*.crt
+*.csr
+*.key
