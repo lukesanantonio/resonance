@@ -96,7 +96,6 @@ def googletoken_login():
     user = cur.fetchone()
     if user == None:
         # Register the user, we already know they have been verified
-        # Put this in a function
         user_id = register_user(id_info['given_name'], id_info['family_name'],
                                 id_info['email'], cursor=cur)
         return str(user_id)
