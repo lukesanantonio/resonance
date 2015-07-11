@@ -53,6 +53,20 @@ def login():
 google_oauth_client_id = ('1006156623232-pk0jjnlkqib9chpa87vesh4j9v1jeafc'
                           '.apps.googleusercontent.com')
 
+# Registers a new user and returns that new user's id.
+def register_user(first_name, last_name, email, password=None,
+                  cursor=None):
+    if cursor == None:
+        cursor = conn.cursor()
+
+    cursor.execute('insert into users (first_name, last_name, email,'
+                   ' password) values (%s, %s, %s, %s) returning id',
+                   (first_name, last_name, email, password))
+    conn.commit()
+
+    user_id = cursor.fetchone()[0]
+    return user_id
+
 @app.route('/googletoken_login', methods=['POST'])
 def googletoken_login():
     client = oauth2client.client
@@ -80,6 +94,12 @@ def googletoken_login():
     cur = conn.cursor()
     cur.execute('select * from users where email=%s', (id_info['email'],))
     user = cur.fetchone()
+    if user == None:
+        # Register the user, we already know they have been verified
+        # Put this in a function
+        user_id = register_user(id_info['given_name'], id_info['family_name'],
+                                id_info['email'], cursor=cur)
+        return str(user_id)
 
     return str(user[0])
 
@@ -92,14 +112,9 @@ def new_user():
     hashed = bcrypt.hashpw(bites, bcrypt.gensalt())
 
     # Insert the user into the database
-    cur = conn.cursor()
-    cur.execute('insert into users (first_name, last_name, email, password)'
-                ' values (%s, %s, %s, %s) returning id',
-                (request.form['first_name'], request.form['last_name'],
-                 request.form['email'], hashed))
-    conn.commit()
-    user_id = cur.fetchone()[0]
-    cur.close()
+    user_id = register_user(request.form['first_name'],
+                            request.form['last_name'],
+                            request.form['email'], hashed)
 
     # Redirect our new user to their new page.
     return flask.redirect('/user/' + str(user_id), code=303)
