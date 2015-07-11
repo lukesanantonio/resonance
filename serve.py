@@ -77,9 +77,11 @@ def googletoken_login():
 
     # We have a valid email.
     # Let's see if the user already signed up
-    # cur = conn.cursor()
-    # cur.execute('select * from users where email=?',
-    print(str(id_info))
+    cur = conn.cursor()
+    cur.execute('select * from users where email=%s', (id_info['email'],))
+    user = cur.fetchone()
+
+    return str(user[1])
 
 @app.route('/user', methods=['POST'])
 def new_user():
