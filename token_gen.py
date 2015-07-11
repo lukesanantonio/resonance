@@ -16,16 +16,20 @@ def make_download_token(song, user):
     hash_gen.update(song)
     hash_gen.update(str(user).encode('utf-8'))
 
-    b64rep = base64.b64encode(hash_gen.digest())
+    # Use 32 since it's case insensitive!
+    b64rep = base64.b32encode(hash_gen.digest())
 
     return b64rep.decode('utf-8')
 
-def verify_download_token(b64rep, song, user):
+def verify_download_token(token, song, user):
     hash_gen = hashlib.sha256()
 
     hash_gen.update(song)
     hash_gen.update(str(user).encode('utf-8'))
 
-    binrep = base64.b64decode(b64rep)
+    # For now, only accept uppercase letters. We can always make it case
+    # *insensitive* if it becomes an issue by adding the parameter:
+    # casefold=True
+    binrep = base64.b32decode(token)
 
     return binrep == hash_gen.digest()
