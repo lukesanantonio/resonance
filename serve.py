@@ -1,8 +1,11 @@
 import flask
 from werkzeug.datastructures import ImmutableDict
 
-import requests
+import argparse
+
 import ssl
+import pg8000
+import bcrypt
 
 import oauth2client.client
 import oauth2client.crypt
@@ -13,6 +16,7 @@ app.jinja_options = ImmutableDict({'extensions':
     ['jinja2.ext.autoescape', 'jinja2.ext.with_',
      'spaceless.SpacelessExtension']})
 
+# Try to initialize SSL
 context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
 
 # Try to use ssl if we are given a certificate.
@@ -24,6 +28,19 @@ except FileNotFoundError:
 
 context.options |= ssl.OP_NO_SSLv2
 context.options |= ssl.OP_NO_SSLv3
+
+# Get credentials to the server.
+parser = argparse.ArgumentParser(description='Initialize a DB.')
+parser.add_argument('host')
+parser.add_argument('user')
+parser.add_argument('password')
+parser.add_argument('db')
+
+args = parser.parse_args()
+
+conn = pg8000.connect(database=args.db, user=args.user, password=args.password,
+                      host=args.host)
+conn.autocommit = True
 
 @app.route('/')
 def index():
@@ -57,20 +74,42 @@ def googletoken_login():
     except crypt.AppIdentityError:
         # Invalid token
         pass
-    return str(id_info)
+
+    # We have a valid email.
+    # Let's see if the user already signed up
+    # cur = conn.cursor()
+    # cur.execute('select * from users where email=?',
+    print(str(id_info))
 
 @app.route('/user', methods=['POST'])
 def new_user():
-    r = requests.post('https://localhost:7677/user', data=flask.request.form,
-                      verify='resonance.crt')
-    return flask.redirect('/user/' + str(r.json()['user']), code=303)
+    request = flask.request
+
+    # Hash our password
+    bites = bytes(request.form['password'], 'utf-8')
+    hashed = bcrypt.hashpw(bites, bcrypt.gensalt())
+
+    # Insert the user into the database
+    cur = conn.cursor()
+    cur.execute('insert into users (first_name, last_name, email, password)'
+                ' values (%s, %s, %s, %s) returning id',
+                (request.form['first_name'], request.form['last_name'],
+                 request.form['email'], hashed))
+    conn.commit()
+    user_id = cur.fetchone()[0]
+    cur.close()
+
+    # Redirect our new user to their new page.
+    return flask.redirect('/user/' + str(user_id), code=303)
 
 @app.route('/user/<int:u_id>')
 def user_info(u_id):
-    r = requests.get('https://localhost:7677/user/' + str(u_id),
-                     verify='resonance.crt')
+    cur = conn.cursor()
+    cur.execute('select * from users where id = %s', (u_id,))
+    user = cur.fetchone()
+    cur.close()
     # TODO: Make a user info page.
-    return str(r.json()['first_name'])
+    return str(user[1])
 
 if __name__ == '__main__':
     if use_ssl:
