@@ -4,8 +4,7 @@ function onSignIn(googleUser) {
   xhr.open('POST', 'https://localhost:5000/googletoken_login');
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
   xhr.onload = function() {
-    console.log('Signed in as: ' + xhr.responseText);
+    window.location.href = '/user/' + xhr.responseText;
   }
-
   xhr.send('id_token=' + id_token);
 }

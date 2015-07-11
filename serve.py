@@ -81,7 +81,7 @@ def googletoken_login():
     cur.execute('select * from users where email=%s', (id_info['email'],))
     user = cur.fetchone()
 
-    return str(user[1])
+    return str(user[0])
 
 @app.route('/user', methods=['POST'])
 def new_user():
