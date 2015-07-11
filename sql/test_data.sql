@@ -1,5 +1,5 @@
-insert into users values (1, 'Luke',  'San Antonio',
-                          'lukesanantonio@gmail.com', NULL);
+insert into users values (1, 'Nobody',  'Som Guy',
+                          'fakeemail@nothingtoseehere.com', NULL);
 insert into users values (2, 'Matt',  'Boutros', NULL, NULL);
 insert into users values (3, 'David', 'Ibrahim', NULL, NULL);
 insert into users values (4, 'Cloe',  'San Antonio', NULL, NULL);
