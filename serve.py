@@ -125,8 +125,14 @@ def user_info(u_id):
     cur.execute('select * from users where id = %s', (u_id,))
     user = cur.fetchone()
     cur.close()
-    # TODO: Make a user info page.
-    return str(user[1])
+
+    user = {
+        'first_name': user[1],
+        'last_name': user[2],
+        'email': user[3]
+    }
+
+    return flask.render_template('user_info.html', user=user)
 
 if __name__ == '__main__':
     if use_ssl:
