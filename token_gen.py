@@ -17,9 +17,9 @@ def make_download_token(song, user):
     hash_gen.update(str(user).encode('utf-8'))
 
     # Use 32 since it's case insensitive!
-    b64rep = base64.b32encode(hash_gen.digest())
+    token = base64.b32encode(hash_gen.digest())
 
-    return b64rep.decode('utf-8')
+    return token.decode('utf-8')
 
 def verify_download_token(token, song, user):
     hash_gen = hashlib.sha256()
