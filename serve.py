@@ -73,11 +73,11 @@ def index():
     return flask.render_template('user_sign_up.html')
 
 def hash_passwd(passwd):
-    bites = bytes(passwd, 'utf-8')
+    bites = passwd.encode('utf-8')
     return bcrypt.hashpw(bites, bcrypt.gensalt())
 
 def check_passwd(passwd, hashed):
-    bites = bytes(passwd, 'utf-8')
+    bites = passwd.encode('utf-8')
     return bcrypt.hashpw(bites, hashed) == hashed
 
 # Registers a new user and returns that new user's id.
