@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}Login{% endblock %}
 {% block content %}
+<center>
 <form method='post' action='/login'>
-  <input type='email' name='email' placeholder='Email Address' />
-  <input type='password' name='password' placeholder='Password' />
-  <input type='submit' name='sub' placeholder='Submit' />
+  <input type='email' name='email' placeholder='Email Address' /><br/>
+  <input type='password' name='password' placeholder='Password' /><br/>
+  <input type='submit' name='sub' placeholder='Submit' value='Submit'><br/>
 </form>
+</center>
 {% endblock %}

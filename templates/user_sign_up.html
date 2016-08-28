@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}New user{% endblock %}
 {% block content %}
+<center>
 <form method='post' action='/user'>
-  <input type='text' name='first_name' placeholder='First name' />
-  <input type='text' name='last_name' placeholder='Last name' />
-  <input type='email' name='email' placeholder='Email' />
-  <input type='password' name='password' placeholder='Password' />
-  <input type='submit' name='sub' placeholder='Submit' />
+  <input type='text' name='first_name' placeholder='First name' /><br/>
+  <input type='text' name='last_name' placeholder='Last name' /><br/>
+  <input type='email' name='email' placeholder='Email' /><br/>
+  <input type='password' name='password' placeholder='Password' /><br/>
+  <input type='submit' name='sub' placeholder='Submit' value='Submit'/><br/>
 </form>
+</center>
 {% endblock %}
