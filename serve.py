@@ -68,6 +68,9 @@ def user_loader(id):
     user_data = cur.fetchone()
     cur.close()
 
+    if user_data == None:
+        return None
+
     ret = User(user_data[0], user_data[1], user_data[2], id)
     return ret
 
