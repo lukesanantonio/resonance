@@ -78,7 +78,7 @@ def hash_passwd(passwd):
 
 def check_passwd(passwd, hashed):
     bites = passwd.encode('utf-8')
-    return bcrypt.hashpw(bites, hashed) == hashed
+    return bcrypt.hashpw(bites, hashed.encode('utf-8')) == hashed
 
 # Registers a new user and returns that new user's id.
 def register_user(first_name, last_name, email, password=None,
