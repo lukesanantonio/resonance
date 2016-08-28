@@ -2,5 +2,8 @@
 {% block title %}{{ current_user.first_name + ' ' + current_user.last_name }}{% endblock %}
 {% block content %}
 <p>{{ current_user.email }}</p>
-<a href="/spotify_auth">Login with Spotify</a>
+<a href="/spotify_auth">Update top artists with Spotify</a>
+{% for name in matches %}
+<p>Match: {{name}}</p><br/>
+{% endfor %}
 {% endblock %}

@@ -14,6 +14,8 @@ import oauth2client.crypt
 
 import requests
 
+import user_match
+
 app = flask.Flask(__name__)
 app.secret_key = 'HDKaskjayuwq5163h1bdsbhfihds'
 
@@ -109,6 +111,7 @@ def register_user(first_name, last_name, email, password=None,
     return User(first_name, last_name, email, user_id)
 
 @app.route('/spotify_auth', methods=['GET'])
+@flask_login.login_required
 def spotify_auth():
     auth_url = ('https://accounts.spotify.com/authorize?client_id={}'
                 '&response_type=code'
@@ -119,6 +122,7 @@ def spotify_auth():
     return flask.redirect(auth_url)
 
 @app.route('/spotify_auth_callback', methods=['GET'])
+@flask_login.login_required
 def spotify_auth_callback():
     code = flask.request.args.get('code', None)
     if code == None:
@@ -143,10 +147,22 @@ def spotify_auth_callback():
                               'limit=50&time_range=medium_term',
                               headers=headers)
 
-    tracks = tracks_res.json().get('items', [])
-    track_names = [track['name'] for track in tracks]
+    artists = tracks_res.json().get('items', [])
+    artist_ids = [artist['id'] for artist in artists]
 
-    return str(track_names)
+    top_artists = ''
+    for id in artist_ids:
+        top_artists = top_artists + ' ' + id
+
+    top_artists = top_artists.strip()
+
+    cur = conn.cursor()
+    cur.execute('update users set top_artists = ? where id = ?',
+                (top_artists, flask_login.current_user.id))
+    conn.commit()
+    cur.close()
+
+    return str([artist['name'] for artist in artists])
 
 @app.route('/user', methods=['POST'])
 def new_user():
@@ -209,10 +225,46 @@ def login():
             flask_login.login_user(user)
             return 'Success Login'
 
+user_matches = {}
+
 @app.route('/me')
 @flask_login.login_required
 def me():
-    return flask.render_template('me.html')
+    # Check match with others, then cache it
+    cur_id = flask_login.current_user.id
+
+    # See if it's already in the cache
+    if cur_id in user_matches:
+        return flask.render_template('me.html', matches=user_matches[cur_id])
+
+    # Find the top artists of all users
+    cur = conn.cursor()
+    cur.execute('select id,top_artists from users')
+
+    all_users_artists = cur.fetchall()
+    cur.close()
+
+    user_artists = {id: artists_str.split()
+                    for id, artists_str in all_users_artists
+                    if artists_str != None}
+
+    our_matches, do_cache = user_match.match(user_artists, cur_id)
+
+    # Take the list of user ids and convert that to a list of names
+    cur = conn.cursor()
+    cur.execute('select id,first_name,last_name from users')
+    user_names_tup = cur.fetchall()
+    user_names = {id: first + ' ' + last for id, first, last in user_names_tup}
+
+    match_names = []
+    for match_id in our_matches:
+        match_names.append(user_names[match_id])
+
+    if do_cache:
+        user_matches[cur_id] = match_names
+
+    print(match_names)
+    return flask.render_template('me.html', matches=match_names)
 
 @app.route('/logout')
 @flask_login.login_required
