@@ -1,6 +1,8 @@
 import flask
 from werkzeug.datastructures import ImmutableDict
 
+import sys
+
 import flask_login
 
 import argparse
@@ -215,7 +217,7 @@ user_matches = {}
 @app.route('/me')
 @flask_login.login_required
 def me():
-    print(str(user_matches))
+    sys.stderr.write(str(user_matches) + '\n')
     # Check match with others, then cache it
     cur_id = flask_login.current_user.id
 
