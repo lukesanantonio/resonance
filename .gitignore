@@ -3,3 +3,7 @@ __pycache__/
 *.crt
 *.csr
 *.key
+
+*.sqlite3
+*~
+#*#
