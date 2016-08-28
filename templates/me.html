@@ -3,7 +3,10 @@
 {% block content %}
 <p>{{ current_user.email }}</p>
 <a href="/spotify_auth">Update top artists with Spotify</a>
-{% for name in matches %}
-<p>Match: {{name}}</p><br/>
+{% for match_info in matches %}
+<p>Match: {{match_info.name}}<br/>
+Like score {{ match_info.like_score }}<br/>
+Unlike score {{ match_info.unlike_score }}<br/>
+Match songs: {{ match_info.artists }}</p>
 {% endfor %}
 {% endblock %}

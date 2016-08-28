@@ -235,7 +235,8 @@ def me():
 
     # See if it's already in the cache
     if cur_id in user_matches:
-        return flask.render_template('me.html', matches=user_matches[cur_id])
+        match_names = user_matches[cur_id][0]
+        return flask.render_template('me.html', matches=match_names)
 
     # Find the top artists of all users
     cur = conn.cursor()
@@ -250,21 +251,21 @@ def me():
 
     our_matches, do_cache = user_match.match(user_artists, cur_id)
 
+    # Cache if necessary
+    if do_cache:
+        user_matches[cur_id] = our_matches
+
     # Take the list of user ids and convert that to a list of names
     cur = conn.cursor()
     cur.execute('select id,first_name,last_name from users')
     user_names_tup = cur.fetchall()
     user_names = {id: first + ' ' + last for id, first, last in user_names_tup}
-
     match_names = []
-    for match_id in our_matches:
-        match_names.append(user_names[match_id])
+    for match in our_matches:
+        match.name = user_names[match.id]
 
-    if do_cache:
-        user_matches[cur_id] = match_names
-
-    print(match_names)
-    return flask.render_template('me.html', matches=match_names)
+    print(our_matches[0].__dict__)
+    return flask.render_template('me.html', matches=our_matches)
 
 @app.route('/logout')
 @flask_login.login_required

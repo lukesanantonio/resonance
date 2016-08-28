@@ -6,9 +6,20 @@
 # Issue with implementation: This only works while we deal with Spotify. It
 # could work if we allow the user to select artists themselves, and just query
 # their ID (in addition to making sure the artist exists).
+
+class MatchInfo:
+    def __init__(self, id, name, like_score, unlike_score, artists):
+        self.id = id
+        self.name = name
+        self.like_score = like_score
+        self.unlike_score = unlike_score
+        self.artists = artists
+
 def match(user_songs, cur_user_id):
+
     like_scores = {}
     unlike_scores = {}
+    shared_artists = {}
 
     # We can't match with a user that doesn't have any songs
     if cur_user_id not in user_songs:
@@ -27,9 +38,15 @@ def match(user_songs, cur_user_id):
         for our_song_i, our_song in enumerate(user_songs[cur_user_id]):
             for their_song_i, their_song in enumerate(user_songs[their_user_id]):
                 if our_song == their_song:
-                    like_score += math.abs(our_song_i - their_song_i)
+                    like_score += abs(our_song_i - their_song_i)
+
+                    # Add the song to the list of matches
+                    if their_user_id not in shared_artists:
+                        shared_artists[their_user_id] = []
+
+                    shared_artists[their_user_id].append(our_song)
                 else:
-                    ++unlike_score
+                    unlike_score += 1
 
         # Link the match score that *this* user had with the *current* user.
         like_scores[their_user_id] = like_score
@@ -48,14 +65,16 @@ def match(user_songs, cur_user_id):
     # Check to see if like score is zero, if it is we may have to remove
     # that user depending on the value of unlike list
     for matched_id, like_score in sorted_user_pairs:
-        if like_score == 0 and unlike_scores[matched_id] == 2500:
+        unlike_score = unlike_scores[matched_id]
+        if like_score == 0 and unlike_score == 2500:
             # These users might as well kill each other. When the unlike
             # score is equal to 2500 then that means that there is no match
             # and that user should be taken off the list of suggested
             # friends.
             pass
         else:
-            final_matches.append(matched_id)
-
+            match = MatchInfo(matched_id, '', like_score, unlike_score,
+                              shared_artists[matched_id])
+            final_matches.append(match)
 
     return final_matches, True
