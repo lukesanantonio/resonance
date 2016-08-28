@@ -24,17 +24,6 @@ app.jinja_options = ImmutableDict({'extensions':
      'spaceless.SpacelessExtension']})
 
 # Try to initialize SSL
-context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-
-# Try to use ssl if we are given a certificate.
-use_ssl = False
-try:
-    context.load_cert_chain('resonance.crt', 'resonance.key')
-except FileNotFoundError:
-    load_ssl = False
-
-context.options |= ssl.OP_NO_SSLv2
-context.options |= ssl.OP_NO_SSLv3
 
 # Get credentials to the server.
 parser = argparse.ArgumentParser(description='Initialize a DB.')
@@ -281,7 +270,4 @@ def unauthorized_handler():
     return 'Unauthorized'
 
 if __name__ == '__main__':
-    if use_ssl:
-        app.run(ssl_context=context, debug=True)
-    else:
-        app.run(debug=True)
+    app.run(debug=True)
