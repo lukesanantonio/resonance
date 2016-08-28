@@ -252,7 +252,6 @@ def me():
     for match in our_matches:
         match.name = user_names[match.id]
 
-    print(our_matches[0].__dict__)
     return flask.render_template('me.html', matches=our_matches)
 
 @app.route('/logout')
