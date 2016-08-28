@@ -26,12 +26,8 @@ app.jinja_options = ImmutableDict({'extensions':
 # Try to initialize SSL
 
 # Get credentials to the server.
-parser = argparse.ArgumentParser(description='Initialize a DB.')
-parser.add_argument('db')
 
-args = parser.parse_args()
-
-conn = sqlite3.connect(args.db, check_same_thread=False)
+conn = sqlite3.connect('resonance_db.sqlite3', check_same_thread=False)
 
 # Initialize Redis
 #redis = redis.StrictRedis(host='50.30.35.9', port=3365,
