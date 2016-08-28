@@ -223,8 +223,8 @@ def me():
 
     # See if it's already in the cache
     if cur_id in user_matches:
-        match_names = user_matches[cur_id][0]
-        return flask.render_template('me.html', matches=match_names)
+        matches = user_matches[cur_id]
+        return flask.render_template('me.html', matches=matches)
 
     # Find the top artists of all users
     cur = conn.cursor()
