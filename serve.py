@@ -218,6 +218,7 @@ user_matches = {}
 @app.route('/me')
 @flask_login.login_required
 def me():
+    print(str(user_matches))
     # Check match with others, then cache it
     cur_id = flask_login.current_user.id
 
