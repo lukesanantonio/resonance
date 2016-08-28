@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}{{ current_user.first_name + ' ' + current_user.last_name }}{% endblock %}
+{% block content %}
+<p>{{ current_user.email }}</p>
+<a href="/spotify_auth">Login with Spotify</a>
+{% endblock %}

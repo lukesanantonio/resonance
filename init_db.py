@@ -1,4 +1,4 @@
-import pg8000
+import sqlite3
 import fileinput
 import sys
 import argparse
@@ -17,17 +17,13 @@ if __name__ == '__main__':
     # Initialize the command parser
     parser = argparse.ArgumentParser(description='Initialize a DB.')
     parser.add_argument('-f', '--force-all', action='store_true')
-    parser.add_argument('host')
-    parser.add_argument('user')
-    parser.add_argument('password')
     parser.add_argument('db')
     parser.add_argument('sql', nargs='+')
 
     args = parser.parse_args()
 
     # Load the sqlite db
-    conn = pg8000.connect(database=args.db, user=args.user,
-                          password=args.password, host=args.host)
+    conn = sqlite3.connect(args.db)
 
     # For every line in every file run the command.
     for filename in args.sql:

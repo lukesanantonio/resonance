@@ -1,11 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Login{% endblock %}
-{% block head %}
-<script src="static/google-auth.js"></script>
-{% endblock %}
 {% block content %}
-<div class="g-signin2" data-onsuccess="onSignIn"></div>
-<form>
+<form method='post' action='/login'>
   <input type='email' name='email' placeholder='Email Address' />
   <input type='password' name='password' placeholder='Password' />
   <input type='submit' name='sub' placeholder='Submit' />
