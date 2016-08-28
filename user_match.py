@@ -1,5 +1,3 @@
-import match
-
 # Credit to Matt
 
 if __name__ == '__main__':
@@ -24,7 +22,6 @@ if __name__ == '__main__':
 
             like_list.append((user_id, like_score))
             unlike_list.append((user_id, unlike_score))
-        }
 
         sorted_user_pairs = sorted(like_list, key=lamba tup: x[1])
 

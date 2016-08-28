@@ -3,5 +3,6 @@ create table users (
   first_name text,
   last_name text,
   email text,
-  password blob
+  password blob,
+  top_artists text
 );
