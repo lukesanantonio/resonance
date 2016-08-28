@@ -103,17 +103,24 @@ def spotify_auth():
     auth_url = ('https://accounts.spotify.com/authorize?client_id={}'
                 '&response_type=code'
                 '&redirect_uri={}'
-                '&scope={}').format(SPOTIFY_CLIENT_ID, SPOTIFY_REDIRECT_URL,
-                                    SPOTIFY_USE_SCOPE)
+                '&scope={}'
+                '&state={}').format(SPOTIFY_CLIENT_ID, SPOTIFY_REDIRECT_URL,
+                                    SPOTIFY_USE_SCOPE,
+                                    flask_login.current_user.id)
 
     return flask.redirect(auth_url)
 
 @app.route('/spotify_auth_callback', methods=['GET'])
-@flask_login.login_required
 def spotify_auth_callback():
     code = flask.request.args.get('code', None)
     if code == None:
-        return
+        return 'Bad spotify for some reason'
+
+    user = user_loader(flask.request.args.get('state', 0))
+
+    if user == None:
+        return 'Bad user id returned'
+    flask_login.login_user(user)
 
     token_data = {
         'grant_type': 'authorization_code',
