@@ -74,7 +74,7 @@ def match(user_songs, cur_user_id):
             pass
         else:
             match = MatchInfo(matched_id, '', like_score, unlike_score,
-                              shared_artists[matched_id])
+                              shared_artists.get(matched_id, []))
             final_matches.append(match)
 
     return final_matches, True
