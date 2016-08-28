@@ -1,0 +1,17 @@
+= The standard user table.
+Luke San Antonio Bialecki <lukesanantonio@gmail.com>
+
+Every user has an id, a name, an email, etc. Password is encrypted with bcrypt.
+Top_artists is a string separated "list" (sorta) of spotify ids corrosponding to
+the user's top artists. It may not be populated for new users who have not
+signed in through Spotify yet.
+----
+create table users (
+  id integer primary key,
+  first_name text,
+  last_name text,
+  email text,
+  password blob,
+  top_artists text
+);
+----
