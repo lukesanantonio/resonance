@@ -255,9 +255,25 @@ def me():
     cur.execute('select id,first_name,last_name from users')
     user_names_tup = cur.fetchall()
     user_names = {id: first + ' ' + last for id, first, last in user_names_tup}
+    artists_to_find = []
     match_names = []
     for match in our_matches:
         match.name = user_names[match.id]
+        # For every matched artist
+        for artist in match.artists:
+            if artist not in artists_to_find:
+                artists_to_find.append(artist)
+
+    artist_names = {}
+    for artist in artists_to_find:
+        artist_obj_res = requests.get('https://api.spotify.com/v1/artists/'
+                                      '{}'.format(artist))
+        artist_names[artist] = artist_obj_res.json()['name']
+
+        # Now update the artist for each match
+        for match in our_matches:
+            for i, artist in enumerate(match.artists):
+                match.artists[i] = artist_names[artist]
 
     return flask.render_template('me.html', matches=our_matches)
 
