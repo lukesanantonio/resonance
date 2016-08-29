@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% block title %}{{ current_user.first_name + ' ' + current_user.last_name }}{% endblock %}
 {% block content %}
+<p>{{ current_user.first_name + ' ' + current_user.last_name }}</p>
 <p>{{ current_user.email }}</p>
+<p>ID: {{ current_user.id }}</p>
 <a href="/spotify_auth">Update top artists with Spotify</a>
 {% for match_info in matches %}
 <p>Match: {{match_info.name}}<br/>
