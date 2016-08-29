@@ -17,9 +17,10 @@ import oauth2client.crypt
 import requests
 
 import user_match
+import local_config as config
 
 app = flask.Flask(__name__)
-app.secret_key = 'HDKaskjayuwq5163h1bdsbhfihds'
+app.secret_key = config.SECRET_KEY
 
 app.jinja_options = ImmutableDict({'extensions':
     ['jinja2.ext.autoescape', 'jinja2.ext.with_',
@@ -61,12 +62,6 @@ def user_loader(id):
     ret = User(user_data[0], user_data[1], user_data[2], id)
     return ret
 
-# == Spotify Credentials
-SPOTIFY_CLIENT_ID = '642055f7320044edafd1d6290b5a4b57'
-SPOTIFY_CLIENT_SECRET = '77d07dc919034af598c6b228475a9ec3'
-SPOTIFY_REDIRECT_URL = 'http://www.redcrane.net/spotify_auth_callback'
-SPOTIFY_USE_SCOPE = ('user-top-read ')
-
 @app.route('/')
 def index():
     return flask.render_template('user_sign_up.html')
@@ -104,8 +99,9 @@ def spotify_auth():
                 '&response_type=code'
                 '&redirect_uri={}'
                 '&scope={}'
-                '&state={}').format(SPOTIFY_CLIENT_ID, SPOTIFY_REDIRECT_URL,
-                                    SPOTIFY_USE_SCOPE,
+                '&state={}').format(config.SPOTIFY_CLIENT_ID,
+                                    config.SPOTIFY_REDIRECT_URL,
+                                    config.SPOTIFY_USE_SCOPE,
                                     flask_login.current_user.id)
 
     return flask.redirect(auth_url)
@@ -125,9 +121,9 @@ def spotify_auth_callback():
     token_data = {
         'grant_type': 'authorization_code',
         'code': code,
-        'redirect_uri': SPOTIFY_REDIRECT_URL,
-        'client_id': SPOTIFY_CLIENT_ID,
-        'client_secret': SPOTIFY_CLIENT_SECRET
+        'redirect_uri': config.SPOTIFY_REDIRECT_URL,
+        'client_id': config.SPOTIFY_CLIENT_ID,
+        'client_secret': config.SPOTIFY_CLIENT_SECRET
     }
     res = requests.post('https://accounts.spotify.com/api/token',
                         data=token_data)
