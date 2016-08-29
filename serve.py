@@ -266,10 +266,10 @@ def me():
                                       '{}'.format(artist))
         artist_names[artist] = artist_obj_res.json()['name']
 
-        # Now update the artist for each match
-        for match in our_matches:
-            for i, artist in enumerate(match.artists):
-                match.artists[i] = artist_names[artist]
+    # Now update the artist for each match
+    for match in our_matches:
+        for i, artist in enumerate(match.artists):
+            match.artists[i] = artist_names[artist]
 
     return flask.render_template('me.html', matches=our_matches)
 
