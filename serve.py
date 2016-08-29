@@ -216,6 +216,7 @@ def login():
             return 'Success Login'
 
 user_matches = {}
+artist_names = {}
 
 @app.route('/me')
 @flask_login.login_required
@@ -260,11 +261,11 @@ def me():
             if artist not in artists_to_find:
                 artists_to_find.append(artist)
 
-    artist_names = {}
     for artist in artists_to_find:
-        artist_obj_res = requests.get('https://api.spotify.com/v1/artists/'
-                                      '{}'.format(artist))
-        artist_names[artist] = artist_obj_res.json()['name']
+        if artist not in artist_names:
+            artist_obj_res = requests.get('https://api.spotify.com/v1/artists/'
+                                          '{}'.format(artist))
+            artist_names[artist] = artist_obj_res.json()['name']
 
     # Now update the artist for each match
     for match in our_matches:
