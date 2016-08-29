@@ -152,7 +152,7 @@ def spotify_auth_callback():
     conn.commit()
     cur.close()
 
-    return str([artist['name'] for artist in artists])
+    return flask.redirect('/me')
 
 @app.route('/user', methods=['POST'])
 def new_user():
@@ -168,7 +168,7 @@ def new_user():
     flask_login.login_user(user);
 
     # Redirect our new user to their new page.
-    return flask.redirect('/user/' + str(user.id), code=303)
+    return flask.redirect('/me')
 
 @app.route('/user/<int:u_id>')
 def user_info(u_id):
