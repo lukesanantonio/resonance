@@ -213,7 +213,7 @@ def login():
             return 'Fail'
         else:
             flask_login.login_user(user)
-            return 'Success Login'
+            return flask.redirect('/me')
 
 user_matches = {}
 artist_names = {}
