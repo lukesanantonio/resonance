@@ -1,3 +1,7 @@
+
+# This should store credentials
+local_config.py
+
 __pycache__/
 
 *.crt
