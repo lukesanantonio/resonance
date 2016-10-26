@@ -2,6 +2,9 @@
 # This should store credentials
 local_config.py
 
+# Local virtualenv
+env/
+
 __pycache__/
 
 *.crt
